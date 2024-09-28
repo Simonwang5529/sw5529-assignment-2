@@ -24,11 +24,11 @@ jobs:
 
     - name: Run Flask application (background)
       run: |
-        nohup make run &
+        nohup make run & echo $! > flask_pid.txt
         sleep 10
 
     - name: Test server response
       run: curl --fail http://127.0.0.1:3000
 
     - name: Kill Flask server
-      run: kill $(jobs -p)
+      run: kill $(cat flask_pid.txt)
