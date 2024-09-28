@@ -1,31 +1,21 @@
-# Variables
-PYTHON = python3
-PIP = pip3
+# Define variables for virtual environment and app
+VENV = venv
+PYTHON = $(VENV)/bin/python
+PIP = $(VENV)/bin/pip
 
-# Commands
+# Install dependencies and create virtual environment if not exists
 install:
-	$(PIP) install -r requirements.txt
-	cd frontend && npm install
+	@test -d $(VENV) || python3 -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install Flask matplotlib numpy
 
+# Run the Flask application
 run:
-	# Start the backend Flask server
-	$(PYTHON) backend/app.py &
+	. venv/bin/activate && FLASK_ENV=development FLASK_APP=app.py flask run --port 3000
 
-	# Start the frontend React server
-	cd frontend && npm start &
-
-	# Wait to ensure both servers are running
-	sleep 5
-
-	# Test whether the app is running at localhost:3000
-	curl -f http://localhost:3000 || echo "Failed to start application"
-
-# Clean up all running processes
+# Clean the virtual environment
 clean:
-	kill `jobs -p` || echo "No jobs running"
+	rm -rf $(VENV)
 
-# Testing GitHub Actions compatibility (add any further tests you have)
-test:
-	make install
-	make run
-	make clean
+# Reinstall all dependencies (Clean and Install)
+reinstall: clean install
