@@ -11,7 +11,7 @@ class KMeans:
         if self.init == 'random':
             random_idx = np.random.permutation(X.shape[0])
             return X[random_idx[:self.n_clusters]]
-        # You can add 'farthest_first' and 'kmeans++' initialization here.
+
 
     def fit(self, X):
         self.centroids = self.initialize_centroids(X)
